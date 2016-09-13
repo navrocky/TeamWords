@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 
+#include <QDebug>
 #include <QStandardPaths>
 #include <QWebPage>
 #include <QtCore>
 #include <QtNetwork/QNetworkAccessManager>
+#include <QNetworkConfigurationManager>
 #include <QWebSettings>
 #include <QFontDatabase>
 #include <QFileInfo>
@@ -29,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent)
     notification = new AsemanNativeNotification(this);
     connect(notification, SIGNAL(notifyAction(uint, const QString &)), SLOT(notifyAction(uint, const QString &)));
     readSettings();
+
+    networkConfigurationManager = new QNetworkConfigurationManager(this);
+    connect(networkConfigurationManager, SIGNAL(onlineStateChanged(bool)), SLOT(onlineStateChanged(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -127,7 +132,7 @@ void MainWindow::realClose()
 
 void MainWindow::reload()
 {
-    webView->reload();
+    setUrl();
 }
 
 void MainWindow::notifyAction(uint id, const QString &action)
@@ -136,6 +141,19 @@ void MainWindow::notifyAction(uint id, const QString &action)
     {
         if (isHidden())
             show();
+    }
+}
+
+void MainWindow::onlineStateChanged(bool isOnline)
+{
+    if (isOnline)
+    {
+        qDebug() << "Goes online - reloading";
+        reload();
+    }
+    else
+    {
+        qDebug() << "Goes offline";
     }
 }
 

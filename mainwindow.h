@@ -21,6 +21,7 @@
 
 class CookieJar;
 class NetworkAccessManager;
+class QNetworkConfigurationManager;
 
 class MainWindow : public QMainWindow
 {
@@ -47,6 +48,9 @@ class MainWindow : public QMainWindow
         void reload();
         void notifyAction(uint id, const QString &action);
 
+    private slots:
+        void onlineStateChanged(bool isOnline);
+
     private:
         WebView *webView;
         AsemanNativeNotification *notification;
@@ -62,6 +66,7 @@ class MainWindow : public QMainWindow
         QAction *startHiddenAction;
         QAction *reloadAction;
         QAction *exitAction;
+        QNetworkConfigurationManager *networkConfigurationManager;
 
         const QString teamLoginUrl = QString("https://%1.slack.com");
         const QString loginUrl = QString("https://slack.com/signin");
